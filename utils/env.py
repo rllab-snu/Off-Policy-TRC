@@ -213,6 +213,7 @@ class GymEnv4(gym.Env):
     def close(self):
         self._env.close()
 
+
 class CheetahEnv(gym.Env):
     def __init__(self, env_name, seed, max_episode_length, action_repeat):
         self.env_name = env_name
@@ -263,6 +264,7 @@ class CheetahEnv(gym.Env):
     def close(self):
         self._env.close()
 
+
 class WalkerEnv(gym.Env):
     def __init__(self, env_name, seed, max_episode_length, action_repeat):
         self.env_name = env_name
@@ -281,17 +283,10 @@ class WalkerEnv(gym.Env):
         self._env.seed(num_seed)
 
     def getCost(self, state):
-        a = 20.0*np.pi/180.0
-        b = 20.0
-        rooty = state[1] # -0.2 < rooty< 0.2
-        cost1 = 1.0/(1.0 + np.exp((a - np.abs(rooty))*b))
-
         a = 0.5
         b = 15.0
         height = state[0] # 0.7 < height
-        cost2 = 1.0/(1.0 + np.exp((height - a)*b))
-
-        cost = cost2
+        cost = 1.0/(1.0 + np.exp((height - a)*b))
         return cost
 
     def reset(self):

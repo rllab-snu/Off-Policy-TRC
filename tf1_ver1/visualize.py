@@ -45,11 +45,6 @@ def draw(env_name, item_list, algo_list, fig_size, window_size, interp_steps, is
             if item_name == "cv":
                 means /= 1000.0
                 stds /= 1000.0
-            if "doggo" in env_name.lower() and algo_name == "WCSAC":
-                linspace = linspace[:10000]
-                means = means[:10000]
-                stds = stds[:10000]
-                ax.scatter([linspace[-1]], [means[-1]], marker='x')
             ax.plot(linspace, means, lw=2, label=algo_name)
             ax.fill_between(linspace, means - stds, means + stds, alpha=0.15)
             max_value = max(max_value, np.max(means + stds))
@@ -65,8 +60,6 @@ def draw(env_name, item_list, algo_list, fig_size, window_size, interp_steps, is
             ax.legend(bbox_to_anchor=(1.04, 0.5), loc='center left', ncol=1, borderaxespad=0.)
         if item_name == "metric":
             ax.set_title(f'{prefix}Score{postfix}', fontsize=fontsize)
-            if "doggo" in env_name.lower():
-                ax.set_ylim(-3.0, 20.0)
         elif item_name == "score":
             ax.set_title(f'{prefix}Reward Sum{postfix}', fontsize=fontsize)
         elif item_name == "cv":

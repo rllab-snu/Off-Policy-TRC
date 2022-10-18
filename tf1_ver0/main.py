@@ -36,8 +36,8 @@ import sys
 def getPaser():
     parser = argparse.ArgumentParser(description='constrained_rl')
     # common
-    parser.add_argument('--no_wandb',  action='store_true', help='not use wandb?')
-    parser.add_argument('--no_slack',  action='store_true', help='not use slack?')
+    parser.add_argument('--wandb',  action='store_true', help='use wandb?')
+    parser.add_argument('--slack',  action='store_true', help='use slack?')
     parser.add_argument('--test',  action='store_true', help='test or train?')
     parser.add_argument('--name', type=str, default='offpolicy_TRC', help='save name.')
     parser.add_argument('--save_freq', type=int, default=int(1e6), help='# of time steps for save.')
@@ -75,7 +75,7 @@ def getPaser():
 
 def train(args):
     # wandb
-    if not args.no_wandb:
+    if args.wandb:
         project_name = '[Safety Gym] OffTRC'
         wandb.init(
             project=project_name, 
@@ -85,7 +85,7 @@ def train(args):
         wandb.run.name = f"{args.name}-{run_idx}"
 
     # slackbot
-    if not args.no_slack:
+    if args.slack:
         slackbot = Slackbot()
 
     # for random seed
@@ -95,7 +95,8 @@ def train(args):
     tf.disable_eager_execution()
 
     # define Environment
-    if 'doggo' in args.env_name.lower() or 'walker' in args.env_name.lower() or 'cheetah' in args.env_name.lower() or 'humanoid' in args.env_name.lower():
+    if 'doggo' in args.env_name.lower() or 'walker' in args.env_name.lower() or \
+        'cheetah' in args.env_name.lower():
         # enable normalization
         env_id = lambda:Env(args.env_name, args.seed, args.max_episode_steps)
         vec_env = make_vec_env(
@@ -212,12 +213,12 @@ def train(args):
             "metric/optim_case":wandb.Histogram(np_histogram=optim_hist), 
         }
 
-        if not args.no_wandb:
+        if args.wandb:
             wandb.log(log_data)
         log_data["metric/optim_case"] = optim_hist[0]/np.sum(optim_hist[0])
         print(log_data)
 
-        if total_step - slack_step >= args.slack_freq and not args.no_slack:
+        if total_step - slack_step >= args.slack_freq and args.slack:
             slackbot.sendMsg(f"{project_name}\nname: {wandb.run.name}\nsteps: {total_step}\nlog: {log_data}")
             slack_step += args.slack_freq
 
@@ -240,6 +241,8 @@ def train(args):
 def test(args):
     # define Environment
     env = Env(args.env_name, args.seed, args.max_episode_steps)
+    obs_rms = RunningMeanStd(args.save_dir, env.observation_space.shape[0])
+    episodes = int(10)
 
     # set args value for env
     args.obs_dim = env.observation_space.shape[0]
@@ -250,37 +253,28 @@ def test(args):
     # define agent
     agent = Agent(args)
 
-    scores = []
-    cvs = []
-
-    epochs = 100
-
-    for epoch in range(epochs):
-        state = env.reset()
+    for episode in range(episodes):
+        obs = env.reset()
+        obs = obs_rms.normalize(obs)
         done = False
-        score = 0
+        score = 0.0
+        cost = 0.0
         cv = 0
         step = 0
-
         while True:
             step += 1
-            action, clipped_action, _, _ = agent.getAction(state, False)
-            # action, clipped_action, _, _ = agent.getAction(state, True)
-            next_state, reward, done, info = env.step(action)
-            env.render()
 
-            state = next_state
+            action, clipped_action, mean, std = agent.getAction(obs, is_train=False)
+            obs, reward, done, info = env.step(clipped_action)
+            obs = obs_rms.normalize(obs)
+            env.render()
             score += reward
             cv += info['num_cv']
+            cost += info['cost']
+            if done: break
+            time.sleep(0.01)
+        print(f"score : {score:.3f}, cv : {cv}, cost: {cost}")
 
-            if done or step >= args.max_episode_steps:
-                break
-        scores.append(score)
-        cvs.append(cv)
-        print(score, cv)
-
-    print(np.mean(scores), np.mean(cvs))
-    env.close()
 
 if __name__ == "__main__":
     parser = getPaser()

@@ -3,7 +3,7 @@ from torch import jit, nn
 import torch
 
 LOG_STD_MAX = 2
-LOG_STD_MIN = -5
+LOG_STD_MIN = -4
 EPS = 1e-8
 
 def initWeights(m, init_value=0.0):

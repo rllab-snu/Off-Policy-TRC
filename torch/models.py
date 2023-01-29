@@ -3,13 +3,9 @@ from torch import jit, nn
 import torch
 
 LOG_STD_MAX = 2
-LOG_STD_MIN = -4
+LOG_STD_MIN = -5
 EPS = 1e-8
 
-def initWeights(m, init_value=0.0):
-    if isinstance(m, torch.nn.Linear):
-        m.weight.data.normal_(0, 0.01)
-        m.bias.data.normal_(init_value, 0.01)
 def initWeights(m, init_value=0.0):
     if isinstance(m, torch.nn.Linear):
         m.weight.data.normal_(0, 0.01)

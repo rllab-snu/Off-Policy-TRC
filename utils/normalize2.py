@@ -27,6 +27,12 @@ class RunningMeanStd(object):
         delta = batch_mean - self.mean
         tot_count = self.count + batch_count
 
+        new_mean = self.mean + delta * batch_count / tot_count
+        m_a = self.var * self.count
+        m_b = batch_var * batch_count
+        m_2 = m_a + m_b + np.square(delta) * (self.count * batch_count / (self.count + batch_count))
+        new_var = m_2 / (self.count + batch_count)
+
         new_count = batch_count + self.count
         self.mean = new_mean
         self.var = new_var
@@ -37,5 +43,9 @@ class RunningMeanStd(object):
         return (observations - self.mean)/np.sqrt(self.var + 1e-8)
 
     def save(self):
+        with open(self.file_name, 'wb') as f:
+            pickle.dump([self.mean, self.var, self.count], f)
+
+    def save2(self):
         with open(self.file_name, 'wb') as f:
             pickle.dump([self.mean, self.var, self.count], f)

@@ -11,14 +11,6 @@ import numpy as np
 import imageio
 import base64
 import types
-import tqdm
-import time
-import glob
-import gym
-import cv2
-import sys
-import io
-import os
 
 def theta2vec(theta):
     ''' Convert an angle (in radians) to a unit vector in that angle around Z '''

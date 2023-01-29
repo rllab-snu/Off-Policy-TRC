@@ -10,6 +10,10 @@ def initWeights(m, init_value=0.0):
     if isinstance(m, torch.nn.Linear):
         m.weight.data.normal_(0, 0.01)
         m.bias.data.normal_(init_value, 0.01)
+def initWeights(m, init_value=0.0):
+    if isinstance(m, torch.nn.Linear):
+        m.weight.data.normal_(0, 0.01)
+        m.bias.data.normal_(init_value, 0.01)
 
 class Policy(nn.Module):
     def __init__(self, args):

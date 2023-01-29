@@ -11,6 +11,14 @@ import numpy as np
 import imageio
 import base64
 import types
+import tqdm
+import time
+import glob
+import gym
+import cv2
+import sys
+import io
+import os
 
 def theta2vec(theta):
     ''' Convert an angle (in radians) to a unit vector in that angle around Z '''
@@ -26,23 +34,6 @@ class Env(gym.Env):
         self.time_step *= self.n_substeps
         self.sim = MjSim(self.model, nsubsteps=self.n_substeps)
         self.viewer = None
-
-        # for environment
-        self.pre_goal_dist = 0.0
-        self.control_freq = 30
-        self.num_time_step = int(1.0/(self.time_step*self.control_freq))
-        self.limit_distance = 0.5
-        self.limit_bound = 0.0
-        self.hazard_size = 0.25*np.sqrt(2.0)
-        self.goal_dist_threshold = 0.25
-        self.h_coeff = 10.0
-        self.max_steps = 1000
-        self.cur_step = 0
-        self.num_hazard = 8
-        self.num_goal = 1
-        self.num_candi_goal = 5
-        self.hazard_group = 2
-        self.num_group = 6
 
         # for candi pos list
         x_space = np.linspace(-2.25, 2.25, 10)

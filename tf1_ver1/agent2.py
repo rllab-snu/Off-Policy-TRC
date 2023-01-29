@@ -53,13 +53,28 @@ class Agent:
 
         # for cost
         self.cost_d = args.cost_d
-        self.cost_alpha = args.cost_alph
+        self.cost_alpha = args.cost_alpha
+        self.sigma_unit = norm.pdf(norm.ppf(self.cost_alpha))/self.cost_alpha
 
         # replay_buffer
         self.replay_buffer = [deque(maxlen=int(args.len_replay_buffer/args.n_envs)) for _ in range(args.n_envs)]
 
         with tf.variable_scope(self.name):
             #placeholder
+            self.states_ph = tf.placeholder(tf.float32, [None, self.state_dim], name='states')
+            self.actions_ph = tf.placeholder(tf.float32, [None, self.action_dim], name='actions')
+            self.targets_ph = tf.placeholder(tf.float32, [None,], name='targets')
+            self.cost_targets_ph = tf.placeholder(tf.float32, [None,], name='cost_targets')
+            self.cost_var_targets_ph = tf.placeholder(tf.float32, [None,], name='cost_var_targets')
+            self.gaes_ph = tf.placeholder(tf.float32, [None,], name='gaes')
+            self.cost_gaes_ph = tf.placeholder(tf.float32, [None,], name='cost_gaes')
+            self.cost_var_gaes_ph = tf.placeholder(tf.float32, [None,], name='cost_var_gaes')
+            self.old_means_ph = tf.placeholder(tf.float32, [None, self.action_dim], name='old_means')
+            self.old_stds_ph = tf.placeholder(tf.float32, [None, self.action_dim], name='old_stds')
+            self.mu_means_ph = tf.placeholder(tf.float32, [None, self.action_dim], name='mu_means')
+            self.mu_stds_ph = tf.placeholder(tf.float32, [None, self.action_dim], name='mu_stds')
+            self.cost_mean_ph = tf.placeholder(tf.float32, (), name='cost_mean')
+            self.cost_var_mean_ph = tf.placeholder(tf.float32, (), name='cost_var_mean')            #placeholder
             self.states_ph = tf.placeholder(tf.float32, [None, self.state_dim], name='states')
             self.actions_ph = tf.placeholder(tf.float32, [None, self.action_dim], name='actions')
             self.targets_ph = tf.placeholder(tf.float32, [None,], name='targets')

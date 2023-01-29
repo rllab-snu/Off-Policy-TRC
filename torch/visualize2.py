@@ -7,21 +7,6 @@ import glob
 import sys
 import os
 
-def main():
-    fig_size = 3
-    window_size = 500
-    interp_steps = 1000
-    item_list = ['metric', 'score', 'cv', 'total_cv']
-
-    env_name = "PointGoal"
-    algo_list = []
-    algo_list.append({
-        'name': 'OffTRC',
-        'logs': [f'results/OffTRC-PointGoal_s{i}' for i in [1]]
-    })
-    draw(env_name, item_list, algo_list, fig_size, window_size, interp_steps)
-
-
 
 def draw(env_name, item_list, algo_list, fig_size, window_size, interp_steps, is_horizon=True):
     if is_horizon:

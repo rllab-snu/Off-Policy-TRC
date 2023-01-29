@@ -15,7 +15,7 @@ class RunningMeanStd(object):
             self.var = np.ones(state_dim, np.float32)
             self.count = 0.0
 
-    def update(self, arr):
+    def update2(self, arr):
         batch_mean = np.mean(arr, axis=0)
         batch_var = np.var(arr, axis=0)
         batch_count = arr.shape[0]

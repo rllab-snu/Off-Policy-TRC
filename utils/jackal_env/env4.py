@@ -85,7 +85,7 @@ class Env(gym.Env):
         self.goal_pos = np.zeros(2)
 
         # for action
-        self.action = np.zeros(5)
+        self.action = np.zeros(2)
 
         # state & action dimension
         self.action_dim = 2
@@ -98,6 +98,7 @@ class Env(gym.Env):
         self.hazard_goal_idx_list = []
         self.hazard_goal_idx_list.append([13,14,15,16,83,84,85,86, 90, 99, 0, 9])
         self.hazard_goal_idx_list.append([21,22,27,28,81,82,87,88, 57, 51, 4])
+        self.hazard_goal_idx_list.append([41,51,49,59,5,15,85,95, 90, 0, 9, 99])
         self.hazard_goal_idx_list.append([41,51,49,59,5,15,85,95, 90, 0, 9, 99])
 
 

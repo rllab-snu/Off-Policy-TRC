@@ -40,12 +40,8 @@ class RunningMeanStd(object):
         return
 
     def normalize(self, observations):
-        return (observations - self.mean)/np.sqrt(self.var + 1e-8)
+        return (observations - self.mean)/np.sqrt(self.var + 1e-10)
 
     def save(self):
-        with open(self.file_name, 'wb') as f:
-            pickle.dump([self.mean, self.var, self.count], f)
-
-    def save2(self):
         with open(self.file_name, 'wb') as f:
             pickle.dump([self.mean, self.var, self.count], f)

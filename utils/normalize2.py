@@ -15,7 +15,7 @@ class RunningMeanStd(object):
             self.var = np.ones(state_dim, np.float32)
             self.count = 0.0
 
-    def update2(self, arr):
+    def update(self, arr):
         batch_mean = np.mean(arr, axis=0)
         batch_var = np.var(arr, axis=0)
         batch_count = arr.shape[0]
@@ -26,12 +26,6 @@ class RunningMeanStd(object):
         if self.count >= self.limit_cnt: return
         delta = batch_mean - self.mean
         tot_count = self.count + batch_count
-
-        new_mean = self.mean + delta * batch_count / tot_count
-        m_a = self.var * self.count
-        m_b = batch_var * batch_count
-        m_2 = m_a + m_b + np.square(delta) * (self.count * batch_count / (self.count + batch_count))
-        new_var = m_2 / (self.count + batch_count)
 
         new_count = batch_count + self.count
         self.mean = new_mean

@@ -45,14 +45,6 @@ class Agent:
         self.n_epochs = args.n_epochs
         self.gae_coeff = args.gae_coeff
 
-        # for networks
-        self.hidden_dim = args.hidden_dim
-        self.log_std_init = args.log_std_init
-        self.activ_func = eval(f"tf.nn.{args.activation}")
-        self.lr = args.lr
-        self.n_epochs = args.n_epochs
-        self.gae_coeff = args.gae_coeff
-
         # for trust region
         self.damping_coeff = args.damping_coeff
         self.num_conjugate = args.num_conjugate
@@ -61,8 +53,7 @@ class Agent:
 
         # for cost
         self.cost_d = args.cost_d
-        self.cost_alpha = args.cost_alpha
-        self.sigma_unit = norm.pdf(norm.ppf(self.cost_alpha))/self.cost_alpha
+        self.cost_alpha = args.cost_alph
 
         # replay_buffer
         self.replay_buffer = [deque(maxlen=int(args.len_replay_buffer/args.n_envs)) for _ in range(args.n_envs)]
